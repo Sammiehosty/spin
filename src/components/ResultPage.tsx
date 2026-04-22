@@ -1,14 +1,21 @@
+// ============================================
+// ⚙️ CONFIGURATION - MUST MATCH SpinWheel.tsx
+// ============================================
+const MONTHLY_FEE = 10000          // 👈 CHANGE THIS: Monthly maintenance fee
+// ============================================
+
 interface ResultPageProps {
   userName: string
   whatsapp: string
   discount: number
+  balance: number
   onBackToHome: () => void
 }
 
-export default function ResultPage({ userName, whatsapp, discount, onBackToHome }: ResultPageProps) {
-  const originalPrice = 10000
+export default function ResultPage({ userName, whatsapp, discount, balance, onBackToHome }: ResultPageProps) {
+  const originalPrice = MONTHLY_FEE
   const discountAmount = (originalPrice * discount) / 100
-  const finalPrice = originalPrice - discountAmount
+  const finalPrice = balance
 
   const handleClaimDiscount = () => {
     const message = discount > 0 

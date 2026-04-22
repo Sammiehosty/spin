@@ -8,6 +8,7 @@ export interface Participant {
   name: string
   whatsapp: string
   discount: number
+  balance: number
   timestamp: number
   claimed: boolean
 }
@@ -18,6 +19,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('register')
   const [currentUser, setCurrentUser] = useState<{ name: string; whatsapp: string } | null>(null)
   const [wonDiscount, setWonDiscount] = useState<number>(0)
+  const [wonBalance, setWonBalance] = useState<number>(10000)
   const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
@@ -33,13 +35,14 @@ function App() {
     setCurrentPage('spin')
   }
 
-  const handleSpinComplete = (discount: number) => {
+  const handleSpinComplete = (discount: number, balance: number) => {
     if (currentUser) {
       const participants: Participant[] = JSON.parse(localStorage.getItem('sammie_participants') || '[]')
       const newParticipant: Participant = {
         name: currentUser.name,
         whatsapp: currentUser.whatsapp,
         discount,
+        balance,
         timestamp: Date.now(),
         claimed: false
       }
@@ -51,6 +54,7 @@ function App() {
       localStorage.setItem('sammie_used_numbers', JSON.stringify(usedNumbers))
     }
     setWonDiscount(discount)
+    setWonBalance(balance)
     setCurrentPage('result')
   }
 
@@ -62,6 +66,7 @@ function App() {
   const handleBackToHome = () => {
     setCurrentUser(null)
     setWonDiscount(0)
+    setWonBalance(10000)
     setIsAdmin(false)
     setCurrentPage('register')
   }
@@ -83,6 +88,7 @@ function App() {
           userName={currentUser.name}
           whatsapp={currentUser.whatsapp}
           discount={wonDiscount}
+          balance={wonBalance}
           onBackToHome={handleBackToHome}
         />
       )}

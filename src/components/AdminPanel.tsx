@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Participant } from '../App'
 
+// ============================================
+// ⚙️ CONFIGURATION - MUST MATCH SpinWheel.tsx
+// ============================================
+const TOTAL_CUSTOMERS = 100        // 👈 CHANGE THIS: Total number of customers
+const DISCOUNT_PERCENTAGE = 40     // 👈 CHANGE THIS: Percentage who can win
+const MONTHLY_FEE = 10000          // 👈 CHANGE THIS: Monthly maintenance fee
+// ============================================
+
+const MAX_WINNERS = Math.floor(TOTAL_CUSTOMERS * (DISCOUNT_PERCENTAGE / 100))
+
 interface AdminPanelProps {
   isLoggedIn: boolean
   onLogin: () => void
@@ -63,7 +73,7 @@ export default function AdminPanel({ isLoggedIn, onLogin, onBack }: AdminPanelPr
         p.name,
         p.whatsapp,
         p.discount,
-        (10000 - (10000 * p.discount / 100)).toLocaleString(),
+        (MONTHLY_FEE - (MONTHLY_FEE * p.discount / 100)).toLocaleString(),
         p.claimed ? 'Yes' : 'No',
         new Date(p.timestamp).toLocaleDateString()
       ].join(','))
@@ -79,7 +89,7 @@ export default function AdminPanel({ isLoggedIn, onLogin, onBack }: AdminPanelPr
 
   const winners = participants.filter(p => p.discount > 0)
   const claimedCount = participants.filter(p => p.claimed).length
-  const totalDiscountGiven = winners.reduce((sum, p) => sum + (10000 * p.discount / 100), 0)
+  const totalDiscountGiven = winners.reduce((sum, p) => sum + (MONTHLY_FEE * p.discount / 100), 0)
 
   if (!isLoggedIn) {
     return (
@@ -175,12 +185,12 @@ export default function AdminPanel({ isLoggedIn, onLogin, onBack }: AdminPanelPr
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
             <p className="text-purple-200 text-sm mb-1">Total Participants</p>
             <p className="text-3xl font-bold text-white">{participants.length}</p>
-            <p className="text-gray-400 text-xs">/ 60 max</p>
+            <p className="text-gray-400 text-xs">/ {TOTAL_CUSTOMERS} max</p>
           </div>
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
             <p className="text-green-200 text-sm mb-1">Winners</p>
             <p className="text-3xl font-bold text-green-400">{winners.length}</p>
-            <p className="text-gray-400 text-xs">/ 24 max (40%)</p>
+            <p className="text-gray-400 text-xs">/ {MAX_WINNERS} max ({DISCOUNT_PERCENTAGE}%)</p>
           </div>
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
             <p className="text-yellow-200 text-sm mb-1">Claimed</p>
@@ -264,7 +274,7 @@ export default function AdminPanel({ isLoggedIn, onLogin, onBack }: AdminPanelPr
                 </thead>
                 <tbody>
                   {participants.map((participant, index) => {
-                    const balance = 10000 - (10000 * participant.discount / 100)
+                    const balance = MONTHLY_FEE - (MONTHLY_FEE * participant.discount / 100)
                     return (
                       <tr key={index} className="border-t border-white/10 hover:bg-white/5">
                         <td className="px-4 py-3 text-gray-300 text-sm">{index + 1}</td>

@@ -1,8 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 
+// ============================================
+// ⚙️ CONFIGURATION - CHANGE THESE VALUES
+// ============================================
+const TOTAL_CUSTOMERS = 100        // 👈 CHANGE THIS: Total number of customers (e.g., 60, 100, 200)
+const DISCOUNT_PERCENTAGE = 40     // 👈 CHANGE THIS: Percentage of customers who can win (e.g., 40 = 40%)
+const MONTHLY_FEE = 10000          // 👈 CHANGE THIS: Monthly maintenance fee in Naira
+// ============================================
+
+const MAX_WINNERS = Math.floor(TOTAL_CUSTOMERS * (DISCOUNT_PERCENTAGE / 100))
+
 interface SpinWheelProps {
   userName: string
-  onSpinComplete: (discount: number) => void
+  onSpinComplete: (discount: number, balance: number) => void
   onBack: () => void
 }
 
@@ -42,18 +52,17 @@ export default function SpinWheel({ userName, onSpinComplete, onBack }: SpinWhee
       }
     }
 
-    // Count winners so far (40% of 60 = 24 winners max)
+    // Count winners so far
     const winnersCount = participants.filter(p => p.discount > 0).length
-    const maxWinners = 24 // 40% of 60 customers
 
     // If we've already given out all discounts, return 0
-    if (winnersCount >= maxWinners) {
+    if (winnersCount >= MAX_WINNERS) {
       return 0
     }
 
     // Calculate probability based on remaining slots
-    const remainingSlots = 60 - participants.length
-    const remainingWinners = maxWinners - winnersCount
+    const remainingSlots = TOTAL_CUSTOMERS - participants.length
+    const remainingWinners = MAX_WINNERS - winnersCount
     
     // Probability of winning
     const winProbability = remainingWinners / remainingSlots
@@ -107,7 +116,8 @@ export default function SpinWheel({ userName, onSpinComplete, onBack }: SpinWhee
     // Complete after animation
     setTimeout(() => {
       setIsSpinning(false)
-      onSpinComplete(winningDiscount)
+      const balance = MONTHLY_FEE - (MONTHLY_FEE * winningDiscount / 100)
+      onSpinComplete(winningDiscount, balance)
     }, 5000)
   }
 
