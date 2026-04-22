@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 // ⚙️ CONFIGURATION - CHANGE THESE VALUES
 // ============================================
 const TOTAL_CUSTOMERS = 100        // 👈 CHANGE THIS: Total number of customers (e.g., 60, 100, 200)
-const DISCOUNT_PERCENTAGE = 40     // 👈 CHANGE THIS: Percentage of customers who can win (e.g., 40 = 40%)
+const DISCOUNT_PERCENTAGE = 20     // 👈 CHANGE THIS: Percentage of customers who can win (e.g., 40 = 40%)
 const MONTHLY_FEE = 10000          // 👈 CHANGE THIS: Monthly maintenance fee in Naira
 // ============================================
 
